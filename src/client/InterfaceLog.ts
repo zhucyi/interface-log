@@ -1,5 +1,5 @@
 import { isArray, isString, isFunction } from 'lodash';
-import { Bridge, Method } from './bridge';
+import { Bridge, Method } from '../bridge';
 
 class InterfaceLog {
   props!: IProps;

@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "./dist/",
     "moduleResolution": "node",
     "target": "esnext",
     "module": "esnext",
-    "allowJs": true
+    "allowJs": true,
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src/**/*"]
 }
