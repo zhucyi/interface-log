@@ -15,7 +15,7 @@ module.exports = {
     rules: [
       {
         test: /.tsx?/,
-        use: 'ts-loader',
+        use: ['ts-loader'],
         exclude: '/node_modules',
       },
       {
@@ -24,18 +24,14 @@ module.exports = {
       },
       {
         test: /.less$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'less-loader' },
-        ],
+        use: ['style-loader', 'css-loader', 'less-loader'],
       },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.json'],
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': resolve(__dirname, './src'),
     },
   },
   devServer: {

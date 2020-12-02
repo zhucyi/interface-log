@@ -11,4 +11,38 @@
     padding: 1%;
     box-shadow: 0 0 0.61538462em rgba(0, 0, 0, 0.4);
   }
+  .log_panel {
+    display: flex;
+    flex-flow: column nowrap;
+    position: fixed;
+    width: 100%;
+    height: 50%;
+    bottom: 0;
+    border: 1px solid #eee;
+    border-top-left-radius: 1%;
+    border-top-right-radius: 1%;
+    display: none;
+    background: #fff;
+    z-index: 2000;
+    .log_content {
+      flex: 1;
+    }
+    .log-hide {
+      width: 100%;
+      padding: 1%;
+      line-height: 1;
+      text-align: center;
+      background: #eee;
+    }
+  }
+  .log_mask {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.1);
+  }
 }

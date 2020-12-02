@@ -1,18 +1,26 @@
-// import './client';
-// import InterfaceLog from './client/InterfaceLog';
+import './client';
+import Client from './client/index';
+import Log from './log/index';
+import Surface from './surface';
 
-// window.interfaceLog = new InterfaceLog({
-//   bridge: 'obj',
+window.client = new Client({
+  bridge: 'obj',
+});
+
+// var a = window.obj.fun0('fn0', function (res) {
+//   console.log(res);
 // });
+// console.log(a);
 
-// // var a = window.obj.fun0('fn0', function (res) {
-// //   console.log(res);
-// // });
-// // console.log(a);
+window.obj.fun1('fn1', function (res) {
+  console.log(`callback result: ${res}`);
+});
 
-// window.obj.fun1('fn1', function (res) {
-//   console.log(`callback result: ${res}`);
-// });
-import InterfaceLog from './surface';
+const surface = new Surface();
 
-new InterfaceLog();
+var log = new Log();
+const $dom = log.getFoldedLine(window.client);
+
+console.log(window.client);
+
+surface.append($dom);

@@ -1,7 +1,7 @@
 import { isArray, isString, isFunction } from 'lodash';
 import { Bridge, Method } from '../bridge';
 
-class InterfaceLog {
+class Client {
   props!: IProps;
   bridgeMap: Map<string, Bridge>;
   curBridgeName: string;
@@ -41,6 +41,7 @@ class InterfaceLog {
         curBridge.methods.set(key, method);
         const _fn = bridgeMap[key];
         const fn = (...params) => {
+          method.refresh();
           // 拦截入参
           this.interceptParams(params, method);
           // 拦截返回值
@@ -68,4 +69,4 @@ class InterfaceLog {
     });
   }
 }
-export default InterfaceLog;
+export default Client;

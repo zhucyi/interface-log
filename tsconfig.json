@@ -7,8 +7,11 @@
     "module": "esnext",
     "allowJs": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "rules": {
+    "no-implicit-dependencies": ["optional", ["src"]]
+  }
 }
