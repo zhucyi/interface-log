@@ -1,8 +1,6 @@
-import { isArray, isString, isFunction } from 'lodash';
 import indexTpl from './pannel.html';
 import './index.less';
 import { addDomString } from '../util/dom';
-import Log from '../log';
 
 class Surface {
   $root: HTMLElement;

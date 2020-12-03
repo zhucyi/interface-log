@@ -1,4 +1,4 @@
-import { isArray, isString, isFunction } from 'lodash';
+import { isArray, isString, isFunction } from '../util/tool';
 import { Bridge } from './bridge';
 import { Method } from './methods';
 

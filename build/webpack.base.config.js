@@ -2,10 +2,8 @@ const { resolve } = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
-  devtool: 'inline-source-map',
   output: {
-    filename: '[name].bundle.js',
+    filename: 'interface-log.js',
     path: resolve(__dirname, '../dist'),
   },
   module: {
