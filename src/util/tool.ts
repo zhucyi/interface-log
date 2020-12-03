@@ -155,16 +155,6 @@ export function getObjName(obj) {
     .replace(']', '');
 }
 
-/**
- * get an object's prototype name
- */
-export function getMapName(map) {
-  return Object.prototype.toString
-    .call(obj)
-    .replace('[object ', '')
-    .replace(']', '');
-}
-
 export function htmlEncode(text) {
   return (document.createElement('a').appendChild(document.createTextNode(text))
     .parentNode as any).innerHTML;

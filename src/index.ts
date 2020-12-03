@@ -3,24 +3,27 @@ import Client from './client/index';
 import Log from './log/index';
 import Surface from './surface';
 
-window.client = new Client({
-  bridge: 'obj',
-});
+class InterfaceLog {
+  private _surface!: Surface;
+  private _client!: Client;
 
-// var a = window.obj.fun0('fn0', function (res) {
-//   console.log(res);
-// });
-// console.log(a);
+  constructor(config: IProps) {
+    this._generateClient(config);
+    this._initSurface();
+  }
+  private _initSurface() {
+    this._surface = new Surface();
+    let $dom = new Log().getFoldedLine(this._client);
+    this._surface.append($dom);
+    this._surface.refresh(() => {
+      $dom = new Log().getFoldedLine(this._client);
+      this._surface.append($dom);
+    });
+  }
+  _generateClient(config: IProps) {
+    if (this._client) return;
+    this._client = new Client(config);
+  }
+}
 
-window.obj.fun1('fn1', function (res) {
-  console.log(`callback result: ${res}`);
-});
-
-const surface = new Surface();
-
-var log = new Log();
-const $dom = log.getFoldedLine(window.client);
-
-console.log(window.client);
-
-surface.append($dom);
+export default InterfaceLog;

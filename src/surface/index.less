@@ -1,11 +1,11 @@
 .log {
+  font-size: 12px;
   .log_btn {
     display: block;
     position: fixed;
     top: 50%;
     right: 0;
     line-height: 1;
-    font-size: 1.07692308em;
     z-index: 10000;
     border-radius: 10%;
     padding: 1%;
@@ -26,13 +26,31 @@
     z-index: 2000;
     .log_content {
       flex: 1;
+      overflow-y: auto;
     }
-    .log-hide {
-      width: 100%;
-      padding: 1%;
-      line-height: 1;
-      text-align: center;
-      background: #eee;
+    .log_tool {
+      display: flex;
+      .log_hide {
+        flex: 1;
+        padding: 1%;
+        line-height: 1;
+        text-align: center;
+        background: rgba(139, 110, 110, 0.76);
+      }
+      .log_clear {
+        flex: 1;
+        padding: 1%;
+        line-height: 1;
+        text-align: center;
+        background: rgba(105, 87, 87, 0.301);
+      }
+      .log_refresh {
+        flex: 1;
+        padding: 1%;
+        line-height: 1;
+        text-align: center;
+        background: #eee;
+      }
     }
   }
   .log_mask {

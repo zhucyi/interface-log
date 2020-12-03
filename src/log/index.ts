@@ -20,22 +20,9 @@ import {
   isSet,
 } from '../util/tool';
 import { String2Dom, hasClass, removeClass, addClass } from '../util/dom';
-// import Spread from './spread';
 import './index.less';
 
 class Log {
-  // target: any;
-
-  // constructor(target?: any) {
-  //   this.target = target;
-  //   nunjucks.configure({ autoescape: true });
-  // }
-
-  // generalDom(): HTMLElement {
-  //   nunjucks.renderString('flod', { username: 'James' });
-  //   return nunjucks;
-  // }
-
   _getOuter(obj) {
     let outer = '';
     let json = JSONStringify(obj);
@@ -98,7 +85,6 @@ class Log {
     });
   }
   _renderMapKeys(obj, $content) {
-    if (!isMap(obj)) return;
     obj.forEach((val, key) => {
       this._renderFlow(obj, val, key, $content);
     });
@@ -108,7 +94,9 @@ class Log {
       keyType = '';
     // render
     let $sub;
-    if (isArray(val)) {
+    if (isMap(val)) {
+      $sub = this._generateMap(val, key, keyType);
+    } else if (isArray(val)) {
       $sub = this._generateArray(val, key, keyType);
     } else if (isObject(val)) {
       $sub = this._generateObject(val, key, keyType);
@@ -121,6 +109,18 @@ class Log {
     $content.insertAdjacentElement('beforeend', $sub);
   }
 
+  _generateMap(val, key, keyType) {
+    let name = getObjName(val) + '[' + val.size + ']';
+    return this.getFoldedLine(
+      val,
+      nunjucks.renderString(flodCodeTpl, {
+        key,
+        keyType,
+        value: name,
+        valueType: 'array',
+      })
+    );
+  }
   _generateArray(val, key, keyType) {
     let name = getObjName(val) + '[' + val.length + ']';
     return this.getFoldedLine(
