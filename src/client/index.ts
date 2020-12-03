@@ -1,5 +1,6 @@
 import { isArray, isString, isFunction } from 'lodash';
-import { Bridge, Method } from '../bridge';
+import { Bridge } from './bridge';
+import { Method } from './methods';
 
 class Client {
   props!: IProps;

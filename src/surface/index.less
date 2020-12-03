@@ -8,15 +8,18 @@
     line-height: 1;
     z-index: 10000;
     border-radius: 10%;
-    padding: 1%;
+    padding: 0.3em 0.5em;
     box-shadow: 0 0 0.61538462em rgba(0, 0, 0, 0.4);
+    border: none;
+    font-size: 1.5em;
+    display: block;
   }
   .log_panel {
     display: flex;
     flex-flow: column nowrap;
     position: fixed;
     width: 100%;
-    height: 50%;
+    height: 70%;
     bottom: 0;
     border: 1px solid #eee;
     border-top-left-radius: 1%;
@@ -27,28 +30,24 @@
     .log_content {
       flex: 1;
       overflow-y: auto;
+      padding: 0.3em;
     }
     .log_tool {
       display: flex;
-      .log_hide {
+      .log_op {
         flex: 1;
-        padding: 1%;
+        padding: 0.5em 0;
         line-height: 1;
         text-align: center;
+        font-size: 1.5em;
+      }
+      .log_hide {
         background: rgba(139, 110, 110, 0.76);
       }
       .log_clear {
-        flex: 1;
-        padding: 1%;
-        line-height: 1;
-        text-align: center;
         background: rgba(105, 87, 87, 0.301);
       }
       .log_refresh {
-        flex: 1;
-        padding: 1%;
-        line-height: 1;
-        text-align: center;
         background: #eee;
       }
     }

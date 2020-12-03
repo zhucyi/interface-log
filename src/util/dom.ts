@@ -8,7 +8,7 @@ export function String2Dom(tpl) {
   const e = document.createElement('div');
   e.innerHTML = tpl;
   const child = e.children;
-  return child.length > 1 ? [...child] : child[0];
+  return child.length > 1 ? Array.from(child) : child[0];
 }
 
 export function hasClass(el: HTMLElement, className: string) {

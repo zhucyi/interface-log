@@ -1,4 +1,3 @@
-import './client';
 import Client from './client/index';
 import Log from './log/index';
 import Surface from './surface';
@@ -11,12 +10,17 @@ class InterfaceLog {
     this._generateClient(config);
     this._initSurface();
   }
+  private printContent() {
+    const bridges = this._client.bridgeMap.values();
+    return Array.from(bridges);
+    // return this._client;
+  }
   private _initSurface() {
     this._surface = new Surface();
-    let $dom = new Log().getFoldedLine(this._client);
+    let $dom = new Log().getFoldedLine(this.printContent());
     this._surface.append($dom);
     this._surface.refresh(() => {
-      $dom = new Log().getFoldedLine(this._client);
+      $dom = new Log().getFoldedLine(this.printContent());
       this._surface.append($dom);
     });
   }

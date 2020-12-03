@@ -6,9 +6,17 @@ window.obj = {
     fun(123);
   },
 };
+window.obj1 = {
+  fun0: function (param) {
+    return param;
+  },
+  fun1: function (param, fun) {
+    fun(123);
+  },
+};
 
 import InterfaceLog from '../index';
-new InterfaceLog({ bridge: 'obj' });
+new InterfaceLog({ bridge: ['obj', 'obj1'] });
 
 // var a = window.obj.fun0('fn0', function (res) {
 //   console.log(res);
