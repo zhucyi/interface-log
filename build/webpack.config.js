@@ -4,8 +4,16 @@ const { resolve } = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = merge(base, {
-  mode: 'production',
+  // mode: 'development',
+  devtool: false,
   entry: resolve(__dirname, '../src/index.ts'),
+  output: {
+    filename: 'interface-log.js',
+    path: resolve(__dirname, '../dist'),
+    library: 'InterfaceLog',
+    libraryTarget: 'umd',
+    libraryExport: 'default',
+  },
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
@@ -16,4 +24,7 @@ module.exports = merge(base, {
       ],
     }),
   ],
+  // optimization: {
+  //   chunkIds: 'named', // To keep filename consistent between different modes (for example building only)
+  // },
 });
