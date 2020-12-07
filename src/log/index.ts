@@ -1,6 +1,5 @@
 import * as nunjucks from 'nunjucks';
 import flodTpl from './flod.html';
-import codeTpl from './code.html';
 import flodCodeTpl from './flod-code.html';
 import {
   JSONStringify,
@@ -17,7 +16,6 @@ import {
   isObject,
   htmlEncode,
   isMap,
-  isSet,
 } from '../util/tool';
 import { String2Dom, hasClass, removeClass, addClass } from '../util/dom';
 import './index.less';

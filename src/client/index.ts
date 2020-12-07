@@ -32,6 +32,7 @@ class Client {
   handleSingleBridge(bridge) {
     if (typeof bridge === 'string') {
       const bridgeMap = window[bridge];
+      const bridgeMapClone = {};
       const keys = Object.keys(bridgeMap);
       keys.forEach(key => {
         if (!isFunction(bridgeMap[key])) {
@@ -40,20 +41,24 @@ class Client {
         const curBridge = this.bridgeMap.get(this.curBridgeName);
         const method = new Method(key);
         curBridge.methods.set(key, method);
-        const _fn = bridgeMap[key];
+        // const _fn = (...args) => bridgeMap[key](...args);
+        const _fn = function (...params) {
+          return bridgeMap[key](...params);
+        };
         const fn = (...params) => {
           method.refresh();
           // 拦截入参
           this.interceptParams(params, method);
           // 拦截返回值
-          const result = _fn.apply(this, params);
+          const result = _fn(...params);
           method.result.set('return', result);
           return result;
         };
         method._fn = _fn;
         method.fn = fn;
-        bridgeMap[key] = fn;
+        bridgeMapClone[key] = fn;
       });
+      window[bridge] = bridgeMapClone;
     }
   }
 

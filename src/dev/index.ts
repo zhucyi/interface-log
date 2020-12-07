@@ -18,11 +18,11 @@ window.obj1 = {
 import InterfaceLog from '../index';
 new InterfaceLog({ bridge: ['obj', 'obj1'] });
 
-// var a = window.obj.fun0('fn0', function (res) {
-//   console.log(res);
-// });
-// console.log(a);
-
-window.obj.fun1('fn1', function (res) {
-  console.log(`callback result: ${res}`);
+var a = window.obj.fun0(new Array(200).fill('123').join(''), function (res) {
+  console.log(res);
 });
+console.log(a);
+
+// window.obj.fun1('fn1', function (res) {
+//   console.log(`callback result: ${res}`);
+// });
