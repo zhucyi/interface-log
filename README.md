@@ -10,6 +10,6 @@ yarn add interface-log
 ```
 ```javascript
 const InterfaceLog = require('interface-log');
-new InterfaceLog();
+new InterfaceLog({bridge:['bridgeName']});
 
 ```
