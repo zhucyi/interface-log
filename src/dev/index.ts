@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 window.obj = {
   fun0: function (param) {
     return param;
@@ -5,24 +7,18 @@ window.obj = {
   fun1: function (param, fun) {
     fun(123);
   },
+  fn: function (key) {
+    const fn = get(window, key);
+    fn(123);
+  },
 };
-window.obj1 = {
-  fun0: function (param) {
-    return param;
-  },
-  fun1: function (param, fun) {
-    fun(123);
-  },
+window.function155993296 = {};
+window.function155993296.global1 = function (param) {
+  console.log('result', param);
+  return param;
 };
 
 import InterfaceLog from '../index';
 new InterfaceLog({ bridge: ['obj', 'obj1'] });
 
-var a = window.obj.fun0(new Array(200).fill('123').join(''), function (res) {
-  console.log(res);
-});
-console.log(a);
-
-// window.obj.fun1('fn1', function (res) {
-//   console.log(`callback result: ${res}`);
-// });
+window.obj.fn('function155993296.global1');

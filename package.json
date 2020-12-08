@@ -7,10 +7,12 @@
   "license": "MIT",
   "main": "./dist/interface-log.js",
   "scripts": {
-    "build": "webpack --config ./build/webpack.config.js",
+    "build": "webpack --config ./build/webpack.config.js --watch",
     "dev": "webpack serve --config ./build/webpack.dev.config.js"
   },
   "dependencies": {
+    "art-template": "^4.13.2",
+    "lodash": "^4.17.20",
     "nunjucks": "^3.2.2"
   },
   "devDependencies": {
@@ -20,6 +22,7 @@
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
     "babel-loader": "^8.2.2",
+    "babel-plugin-lodash": "^3.3.4",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.3.2",
     "css-loader": "^5.0.1",
@@ -27,9 +30,10 @@
     "html-webpack-plugin": "^4.5.0",
     "less": "^3.12.2",
     "less-loader": "^7.1.0",
+    "lodash-webpack-plugin": "^0.11.5",
     "style-loader": "^2.0.0",
     "typescript": "^4.1.2",
-    "webpack": "^5.8.0",
+    "webpack": "4.44.2",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^5.4.0"

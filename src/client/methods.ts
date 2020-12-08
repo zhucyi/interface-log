@@ -3,7 +3,7 @@ export class Method {
   _fn: Function;
   fn: Function;
   isCalled: Boolean = false;
-  props: any[] = [];
+  props: MethodsProps[] = [];
   result: Map<string, any> = new Map();
   constructor(name) {
     this.name = name;

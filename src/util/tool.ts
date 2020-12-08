@@ -1,36 +1,17 @@
-export function isNumber(value) {
-  return Object.prototype.toString.call(value) == '[object Number]';
-}
-export function isString(value) {
-  return Object.prototype.toString.call(value) == '[object String]';
-}
-export function isArray(value) {
-  return Object.prototype.toString.call(value) == '[object Array]';
-}
-export function isBoolean(value) {
-  return Object.prototype.toString.call(value) == '[object Boolean]';
-}
-export function isUndefined(value) {
-  return value === undefined;
-}
-export function isNull(value) {
-  return value === null;
-}
-export function isSymbol(value) {
-  return Object.prototype.toString.call(value) == '[object Symbol]';
-}
-export function isMap(value) {
-  return Object.prototype.toString.call(value) == '[object Map]';
-}
-export function isWeakMap(value) {
-  return Object.prototype.toString.call(value) == '[object WeakMap]';
-}
-export function isSet(value) {
-  return Object.prototype.toString.call(value) == '[object Set]';
-}
-export function isWeakSet(value) {
-  return Object.prototype.toString.call(value) == '[object WeakSet]';
-}
+import {
+  isNumber,
+  isString,
+  isArray,
+  isBoolean,
+  isUndefined,
+  isNull,
+  isSymbol,
+  isMap,
+  isWeakMap,
+  isSet,
+  isWeakSet,
+  isFunction,
+} from 'lodash';
 export function isObject(value) {
   return (
     Object.prototype.toString.call(value) == '[object Object]' ||
@@ -49,9 +30,6 @@ export function isObject(value) {
       !isWeakSet(value))
   );
 }
-export function isFunction(value) {
-  return Object.prototype.toString.call(value) == '[object Function]';
-}
 export function isWindow(value) {
   var toString = Object.prototype.toString.call(value);
   return (
@@ -59,24 +37,6 @@ export function isWindow(value) {
     toString == '[object Window]' ||
     toString == '[object DOMWindow]'
   );
-}
-
-/**
- * 纯对象，字面量和Object.create
- * @param obj
- */
-export default function isPlainObject(obj: any) {
-  if (typeof obj !== 'object' || obj === null) {
-    return false;
-  }
-  if (Object.getPrototypeOf(obj) === null) {
-    return true;
-  }
-  let proto = obj;
-  while (Object.getPrototypeOf(proto) !== null) {
-    proto = Object.getPrototypeOf(proto);
-  }
-  return Object.getPrototypeOf(obj) === proto;
 }
 
 /**
@@ -131,31 +91,22 @@ export function JSONStringify(stringObject) {
 /**
  * get an object's all keys ignore whether they are not enumerable
  */
-export function getObjAllKeys(obj) {
-  // if (!isObject(obj) && !isArray(obj)) {
-  //   return [];
-  // }
-  // if (isArray(obj)) {
-  //   const m = [];
-  //   obj.forEach((_, index) => {
-  //     m.push(index);
-  //   });
-  //   return m;
-  // }
+export function getObjAllKeys(obj): string[] {
   return Object.getOwnPropertyNames(obj).sort();
 }
 
 /**
  * get an object's prototype name
  */
-export function getObjName(obj) {
+export function getObjName(obj): string {
   return Object.prototype.toString
     .call(obj)
     .replace('[object ', '')
     .replace(']', '');
 }
 
-export function htmlEncode(text) {
-  return (document.createElement('a').appendChild(document.createTextNode(text))
-    .parentNode as any).innerHTML;
+export function htmlEncode(text: string): string {
+  const $a = document.createElement('a');
+  $a.appendChild(document.createTextNode(text));
+  return $a.innerHTML;
 }

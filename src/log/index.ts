@@ -4,6 +4,13 @@ import flodCodeTpl from './flod-code.html';
 import {
   JSONStringify,
   getObjName,
+  getObjAllKeys,
+  isObject,
+  htmlEncode,
+} from '../util/tool';
+import {
+  isArray,
+  isMap,
   isString,
   isNumber,
   isBoolean,
@@ -11,12 +18,7 @@ import {
   isUndefined,
   isFunction,
   isSymbol,
-  getObjAllKeys,
-  isArray,
-  isObject,
-  htmlEncode,
-  isMap,
-} from '../util/tool';
+} from 'lodash';
 import { String2Dom, hasClass, removeClass, addClass } from '../util/dom';
 import './index.less';
 

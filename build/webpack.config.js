@@ -2,6 +2,7 @@ const { merge } = require('webpack-merge');
 const base = require('./webpack.base.config');
 const { resolve } = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const lodashWebpackPlugin = require('lodash-webpack-plugin');
 
 module.exports = merge(base, {
   // mode: 'development',
@@ -22,6 +23,9 @@ module.exports = merge(base, {
           to: resolve(__dirname, '../dist/interface-log.d.ts'),
         },
       ],
+    }),
+    new lodashWebpackPlugin({
+      paths: true,
     }),
   ],
   // optimization: {
