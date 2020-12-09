@@ -1,11 +1,17 @@
 {
   "name": "interface-log",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Client interface visualization",
   "repository": "https://github.com/zhucyi/interface-log.git",
   "author": "Choee",
   "license": "MIT",
   "main": "./dist/interface-log.js",
+  "keywords": [
+    "console",
+    "debug",
+    "mobile",
+    "jsbridge"
+  ],
   "scripts": {
     "build": "webpack --config ./build/webpack.config.js --watch",
     "dev": "webpack serve --config ./build/webpack.dev.config.js"
