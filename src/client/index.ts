@@ -28,40 +28,47 @@ class Client {
     }
   }
 
-  handleSingleBridge(bridge: string) {
-    const bridgeMap = get(window, bridge);
-    if (!isObjectLike(bridgeMap)) {
+  handleSingleBridge(bridgeName: string) {
+    // origin bridge
+    const originBridge = get(window, bridgeName);
+    if (!isObjectLike(originBridge)) {
       return;
     }
-    const bridgeMapClone = {};
-    const keys = Object.keys(bridgeMap);
-    keys.forEach(key => {
-      if (!isFunction(bridgeMap[key])) {
+    const newBridge = {};
+    const bridgeKeys = Object.keys(originBridge);
+    bridgeKeys.forEach(key => {
+      if (!isFunction(originBridge[key])) {
         return;
       }
-      const curBridge = this.bridgeMap.get(bridge);
-      const method = new Method(key);
-      curBridge.methods.set(key, method);
-      const _fn = (...args) => bridgeMap[key](...args);
-      const fn = (...params) => {
-        method.refresh();
-        // 拦截入参
-        this.interceptParams(params, method);
-        // 拦截返回值
-        const result = _fn(...params);
-        method.result.set('return', result);
-        return result;
-      };
-      method._fn = _fn;
-      method.fn = fn;
-      bridgeMapClone[key] = fn;
+      set(newBridge, key, this.handleSingleMethod(bridgeName, key));
     });
-    window[bridge] = bridgeMapClone;
+    set(window, bridgeName, newBridge);
+  }
+
+  handleSingleMethod(bridgeName: string, methodName: string): Function {
+    const originBridge = get(window, bridgeName);
+    const _bridge = this.bridgeMap.get(bridgeName);
+    const method = new Method(methodName);
+    _bridge.methods.set(methodName, method);
+    const _fn = (...params) => get(originBridge, methodName)(...params);
+    const fn = (...params) => {
+      method.refresh();
+      // 拦截入参
+      this.interceptParams(params, method);
+      // 拦截返回值
+      const result = _fn(...params);
+      method.result.set('return', result);
+      return result;
+    };
+    method._fn = _fn;
+    method.fn = fn;
+    return fn;
   }
 
   interceptParams(params, method: Method) {
     params.forEach((param, index) => {
       if (isFunction(param)) {
+        method.propsHasCallback = true;
         // 处理返回值在回调中情况
         params[index] = (...args) => {
           method.result.set(`cb${index}`, args);
@@ -80,6 +87,7 @@ class Client {
       const _fn = get(window, param);
       if (isString(param) && isFunction(_fn)) {
         // 返回值在回调中,但传入的是函数名称字符串
+        method.propsHasCallback = true;
         const fn = (...args) => {
           method.result.set(`cb${index}`, args);
           return _fn.apply(this, args);

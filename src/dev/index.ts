@@ -14,8 +14,10 @@ window.obj = {
 };
 window.function155993296 = {};
 window.function155993296.global1 = function (param) {
-  console.log('result', param);
-  return param;
+  return new Promise(res => {
+    console.log('result', param);
+    res(param);
+  });
 };
 
 import InterfaceLog from '../index';
