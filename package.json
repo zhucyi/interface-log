@@ -1,6 +1,6 @@
 {
   "name": "interface-log",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Client interface visualization",
   "repository": "https://github.com/zhucyi/interface-log.git",
   "author": "Choee",
@@ -16,7 +16,8 @@
     "prebuild": "eslint ./src",
     "build": "webpack --config ./build/webpack.config.js",
     "dev": "webpack serve --config ./build/webpack.dev.config.js",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "art-template": "^4.13.2",
