@@ -1,5 +1,7 @@
 const { resolve } = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintWebpackPlugin = require('eslint-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   output: {
@@ -16,12 +18,12 @@ module.exports = {
         exclude: '/node_modules',
       },
       {
-        test: /.html$/,
-        use: 'html-loader',
-      },
-      {
         test: /.less$/,
         use: ['style-loader', 'css-loader', 'less-loader'],
+      },
+      {
+        test: /\.art$/,
+        use: 'art-template-loader',
       },
     ],
   },
@@ -31,5 +33,13 @@ module.exports = {
       '@': resolve(__dirname, './src'),
     },
   },
-  plugins: [new CleanWebpackPlugin()],
+  plugins: [
+    new CleanWebpackPlugin(),
+    new ESLintWebpackPlugin(),
+    new ForkTsCheckerWebpackPlugin({
+      eslint: {
+        files: './src/**/*.{ts,tsx,js,jsx}',
+      },
+    }),
+  ],
 };

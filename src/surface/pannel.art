@@ -1,7 +1,17 @@
 <div class="log">
   <button class="log_btn">check</button>
   <div class="log_panel">
-    <div class="log_content"></div>
+    <div class="log_content">
+      <div class="log_item">
+        <div>method name</div>
+        <div>path</div>
+        <div>status</div>
+        <div>props</div>
+        <div>result</div>
+        <div>time</div>
+        <div>size</div>
+      </div>
+    </div>
     <div class="log_tool">
       <div class="log_hide log_op">hide</div>
       <div class="log_clear log_op">clear</div>

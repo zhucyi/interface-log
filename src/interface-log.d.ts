@@ -2,7 +2,7 @@ declare module 'interface-log' {
   class Surface {}
   class Client {}
   interface IProps {
-    bridge: String | String[];
+    bridge: string | string[];
   }
   export default class InterfaceLog {
     readonly _surface: Surface;

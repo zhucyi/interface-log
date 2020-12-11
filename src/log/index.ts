@@ -1,12 +1,12 @@
-import * as nunjucks from 'nunjucks';
-import flodTpl from './flod.html';
-import flodCodeTpl from './flod-code.html';
+import foldArt from './flod.art';
+import flodCodeArt from './flod-code.art';
 import {
   JSONStringify,
   getObjName,
   getObjAllKeys,
   isObject,
   htmlEncode,
+  hasOwnProperty,
 } from '../util/tool';
 import {
   isArray,
@@ -23,9 +23,14 @@ import { String2Dom, hasClass, removeClass, addClass } from '../util/dom';
 import './index.less';
 
 class Log {
-  _getOuter(obj) {
+  $line: HTMLElement;
+  constructor(obj: unknown) {
+    this.$line = this.getFoldedLine(obj);
+  }
+
+  _getOuter(obj: unknown): string {
     let outer = '';
-    let json = JSONStringify(obj);
+    const json = JSONStringify(obj);
     let preview = json.substr(0, 36);
     outer = getObjName(obj);
     if (json.length > 36) {
@@ -35,12 +40,12 @@ class Log {
     return outer;
   }
 
-  getFoldedLine(obj, outer?) {
+  getFoldedLine(obj: unknown, outer?: string): HTMLElement {
     if (!outer) {
       outer = this._getOuter(obj);
     }
-    let $line = <HTMLElement>String2Dom(
-      nunjucks.renderString(flodTpl, {
+    const $line = <HTMLElement>String2Dom(
+      foldArt({
         outer: outer,
         lineType: 'obj',
       })
@@ -57,10 +62,14 @@ class Log {
         addClass($inner, 'vc-toggle');
         addClass($outer, 'vc-toggle');
       }
-      let $content = $inner;
+      const $content = $inner;
       setTimeout(() => {
         if ($content.children.length > 0 || !obj) return;
-        if (isMap(obj) && isMap(obj.__proto__)) {
+        if (
+          isMap(obj) &&
+          isMap(Object.getPrototypeOf(obj)) &&
+          _isMap<unknown, unknown>(obj)
+        ) {
           this._renderMapKeys(obj, $content);
         } else {
           // render object's keys
@@ -74,46 +83,56 @@ class Log {
     return $line;
   }
 
-  _renderObjectKeys(obj, $content) {
-    let keys = getObjAllKeys(obj);
+  _renderObjectKeys(obj: unknown, $content: HTMLElement): void {
+    const keys = getObjAllKeys(obj);
     keys.forEach(key => {
       let val;
       try {
         val = obj[key];
+        // eslint-disable-next-line no-empty
       } catch (e) {}
       this._renderFlow(obj, val, key, $content);
     });
   }
-  _renderMapKeys(obj, $content) {
+  _renderMapKeys(obj: Map<unknown, unknown>, $content: HTMLElement): void {
     obj.forEach((val, key) => {
       this._renderFlow(obj, val, key, $content);
     });
   }
-  _renderFlow(obj, val, key, $content) {
-    let valueType = 'undefined',
-      keyType = '';
+  _renderFlow(
+    obj: unknown,
+    val: unknown,
+    key: unknown,
+    $content: HTMLElement
+  ): void {
+    const valueType = 'undefined';
+    let keyType = '';
     // render
     let $sub;
-    if (isMap(val)) {
+    if (isMap(val) && _isMap<unknown, unknown>(val)) {
       $sub = this._generateMap(val, key, keyType);
-    } else if (isArray(val)) {
-      $sub = this._generateArray(val, key, keyType);
+    } else if (isArray(val) && _isArray<unknown>(val)) {
+      $sub = this._generateArray(val, <number>key, keyType);
     } else if (isObject(val)) {
-      $sub = this._generateObject(val, key, keyType);
+      $sub = this._generateObject(val, <string>key, keyType);
     } else {
-      if (obj.hasOwnProperty && !obj.hasOwnProperty(key)) {
+      if (!hasOwnProperty.call(obj, key)) {
         keyType = 'private';
       }
-      $sub = this._generateNormal(val, key, valueType, keyType);
+      $sub = this._generateNormal(val, <string>key, valueType, keyType);
     }
     $content.insertAdjacentElement('beforeend', $sub);
   }
 
-  _generateMap(val, key, keyType) {
-    let name = getObjName(val) + '[' + val.size + ']';
+  _generateMap(
+    val: Map<unknown, unknown>,
+    key: unknown,
+    keyType: string
+  ): HTMLElement {
+    const name = getObjName(val) + '[' + val.size + ']';
     return this.getFoldedLine(
       val,
-      nunjucks.renderString(flodCodeTpl, {
+      flodCodeArt({
         key,
         keyType,
         value: name,
@@ -121,11 +140,12 @@ class Log {
       })
     );
   }
-  _generateArray(val, key, keyType) {
-    let name = getObjName(val) + '[' + val.length + ']';
+
+  _generateArray(val: unknown[], key: number, keyType: string): HTMLElement {
+    const name = getObjName(val) + '[' + val.length + ']';
     return this.getFoldedLine(
       val,
-      nunjucks.renderString(flodCodeTpl, {
+      flodCodeArt({
         key,
         keyType,
         value: name,
@@ -133,11 +153,11 @@ class Log {
       })
     );
   }
-  _generateObject(val, key, keyType) {
-    let name = getObjName(val);
+  _generateObject(val: unknown, key: string, keyType: string): HTMLElement {
+    const name = getObjName(val);
     return this.getFoldedLine(
       val,
-      nunjucks.renderString(flodCodeTpl, {
+      flodCodeArt({
         key: htmlEncode(key),
         keyType: keyType,
         value: name,
@@ -145,46 +165,52 @@ class Log {
       })
     );
   }
-  _generateNormal(val, key, valueType, keyType) {
+  _generateNormal(
+    val: unknown,
+    key: string,
+    valueType: string,
+    keyType: string
+  ): HTMLElement {
+    let value = Object.prototype.toString.call(val);
     // handle value
     if (isString(val)) {
       valueType = 'string';
-      val = '"' + val + '"';
+      value = '"' + val + '"';
     } else if (isNumber(val)) {
       valueType = 'number';
     } else if (isBoolean(val)) {
       valueType = 'boolean';
     } else if (isNull(val)) {
       valueType = 'null';
-      val = 'null';
+      value = 'null';
     } else if (isUndefined(val)) {
       valueType = 'undefined';
-      val = 'undefined';
+      value = 'undefined';
     } else if (isFunction(val)) {
       valueType = 'function';
-      val = 'function()';
+      value = 'function()';
     } else if (isSymbol(val)) {
       valueType = 'symbol';
     }
-    return String2Dom(
-      nunjucks.renderString(flodTpl, {
+    return <HTMLElement>String2Dom(
+      foldArt({
         lineType: 'kv',
         key: htmlEncode(key),
         keyType: keyType,
-        value: htmlEncode(val),
+        value: htmlEncode(value),
         valueType: valueType,
       })
     );
   }
 
-  _renderPrototype(obj, $content) {
+  _renderPrototype(obj: unknown, $content: HTMLElement): void {
     // if (!isObject(obj)) return;
-    let proto = obj.__proto__,
-      $proto;
+    const proto = Object.getPrototypeOf(obj);
+    // let $proto;
     // if (isObject(proto)) {
-    $proto = this.getFoldedLine(
+    const $proto = this.getFoldedLine(
       proto,
-      nunjucks.renderString(flodCodeTpl, {
+      flodCodeArt({
         key: '__proto__',
         keyType: 'private',
         value: getObjName(proto),

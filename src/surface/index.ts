@@ -1,4 +1,4 @@
-import indexTpl from './pannel.html';
+import indexArt from './pannel.art';
 import './index.less';
 import { addDomString } from '../util/dom';
 
@@ -11,16 +11,18 @@ class Surface {
     this._initUnit();
     this._initEvent();
   }
-  _initUnit() {
+  _initUnit(): void {
     const dpr = window.devicePixelRatio || 1;
     const viewportEl: HTMLMetaElement = document.querySelector(
       '[name="viewport"]'
     );
     if (viewportEl && viewportEl.content) {
-      let initialScale = viewportEl.content.match(
-        /initial\-scale\=\d+(\.\d+)?/
+      const initialScale = viewportEl.content.match(
+        /initial-scale=\d+(\.\d+)?/
       );
-      let scale = initialScale ? parseFloat(initialScale[0].split('=')[1]) : 1;
+      const scale = initialScale
+        ? parseFloat(initialScale[0].split('=')[1])
+        : 1;
       if (scale < 1) {
         this.$root.style.fontSize = 13 * dpr + 'px';
       }
@@ -32,14 +34,16 @@ class Surface {
     }
   }
 
-  _render() {
+  _render(): void {
     this._renderGeneral();
   }
-  _renderGeneral() {
-    this.$root = <HTMLElement>addDomString(document.documentElement, indexTpl);
+  _renderGeneral(): void {
+    this.$root = <HTMLElement>(
+      addDomString(document.documentElement, indexArt())
+    );
     this.$content = this.$root.querySelector('.log_content');
   }
-  _initEvent() {
+  _initEvent(): void {
     const { $root } = this;
     const $btn: HTMLElement = $root.querySelector('.log_btn');
     const $panel: HTMLElement = $root.querySelector('.log_panel');
@@ -61,10 +65,10 @@ class Surface {
     });
   }
 
-  append(dom) {
+  append(dom: HTMLElement): void {
     this.$content.append(dom);
   }
-  refresh(fun) {
+  refresh(fun: Fn<unknown>): void {
     const $refresh: HTMLElement = this.$root.querySelector('.log_refresh');
     $refresh.addEventListener('click', () => {
       this.$content.innerHTML = '';

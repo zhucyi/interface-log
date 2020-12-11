@@ -1,6 +1,6 @@
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 
-window.obj = {
+set(window, 'obj', {
   fun0: function (param) {
     return param;
   },
@@ -11,16 +11,15 @@ window.obj = {
     const fn = get(window, key);
     fn(123);
   },
-};
-window.function155993296 = {};
-window.function155993296.global1 = function (param) {
+});
+set(window, 'function155993296.global1', function (param) {
   return new Promise(res => {
     console.log('result', param);
     res(param);
   });
-};
+});
 
 import InterfaceLog from '../index';
 new InterfaceLog({ bridge: ['obj', 'obj1'] });
 
-window.obj.fn('function155993296.global1');
+get(window, 'obj')['fn']('function155993296.global1');

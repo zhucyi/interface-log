@@ -2,6 +2,7 @@ import { isArray, isString, isFunction, isObjectLike, get, set } from 'lodash';
 import { Bridge } from './bridge';
 import { Method } from './methods';
 import { getObjName } from '../util/tool';
+import { IProps } from '../types';
 
 class Client {
   props!: IProps;
@@ -13,7 +14,7 @@ class Client {
     this.init();
   }
 
-  init() {
+  init(): void {
     const { bridge } = this.props;
     const handle = name => {
       // 初始化bridge映射
@@ -28,7 +29,7 @@ class Client {
     }
   }
 
-  handleSingleBridge(bridgeName: string) {
+  handleSingleBridge(bridgeName: string): void {
     // origin bridge
     const originBridge = get(window, bridgeName);
     if (!isObjectLike(originBridge)) {
@@ -45,7 +46,7 @@ class Client {
     set(window, bridgeName, newBridge);
   }
 
-  handleSingleMethod(bridgeName: string, methodName: string): Function {
+  handleSingleMethod(bridgeName: string, methodName: string): Fn<unknown> {
     const originBridge = get(window, bridgeName);
     const _bridge = this.bridgeMap.get(bridgeName);
     const method = new Method(methodName);
@@ -65,21 +66,22 @@ class Client {
     return fn;
   }
 
-  interceptParams(params, method: Method) {
+  interceptParams(params: unknown[], method: Method): void {
     params.forEach((param, index) => {
-      if (isFunction(param)) {
+      if (isFunction(param) && _isFunction(param)) {
         method.propsHasCallback = true;
         // 处理返回值在回调中情况
-        params[index] = (...args) => {
+        const _fn = (...args) => {
           method.result.set(`cb${index}`, args);
           return param.apply(this, args);
         };
+        params[index] = _fn;
         method.props.push({
           index,
           type: 'function',
           value: params[index],
           fn: param,
-          _fn: params[index],
+          _fn,
         });
         return;
       }
@@ -110,4 +112,5 @@ class Client {
     });
   }
 }
+
 export default Client;

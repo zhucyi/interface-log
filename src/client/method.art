@@ -1,0 +1,9 @@
+<div class="log_item">
+  <div>method name</div>
+  <div>path</div>
+  <div>status</div>
+  <div>props</div>
+  <div>result</div>
+  <div>time</div>
+  <div>size</div>
+</div>

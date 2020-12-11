@@ -12,7 +12,8 @@ import {
   isWeakSet,
   isFunction,
 } from 'lodash';
-export function isObject(value) {
+
+export function isObject(value: unknown): boolean {
   return (
     Object.prototype.toString.call(value) == '[object Object]' ||
     // if it isn't a primitive value, then it is a common object
@@ -30,8 +31,8 @@ export function isObject(value) {
       !isWeakSet(value))
   );
 }
-export function isWindow(value) {
-  var toString = Object.prototype.toString.call(value);
+export function isWindow(value: unknown): boolean {
+  const toString = Object.prototype.toString.call(value);
   return (
     toString == '[object global]' ||
     toString == '[object Window]' ||
@@ -42,7 +43,7 @@ export function isWindow(value) {
 /**
  * Simple JSON stringify, stringify top level key-value
  */
-export function JSONStringify(stringObject) {
+export function JSONStringify(stringObject: unknown): string {
   if (!isObject(stringObject) && !isArray(stringObject)) {
     return JSON.stringify(stringObject);
   }
@@ -91,14 +92,14 @@ export function JSONStringify(stringObject) {
 /**
  * get an object's all keys ignore whether they are not enumerable
  */
-export function getObjAllKeys(obj): string[] {
+export function getObjAllKeys(obj: unknown): string[] {
   return Object.getOwnPropertyNames(obj).sort();
 }
 
 /**
  * get an object's prototype name
  */
-export function getObjName(obj): string {
+export function getObjName(obj: unknown): string {
   return Object.prototype.toString
     .call(obj)
     .replace('[object ', '')
@@ -110,3 +111,5 @@ export function htmlEncode(text: string): string {
   $a.appendChild(document.createTextNode(text));
   return $a.innerHTML;
 }
+
+export const hasOwnProperty = Object.prototype.hasOwnProperty;
