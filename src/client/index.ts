@@ -53,12 +53,14 @@ class Client {
     _bridge.methods.set(methodName, method);
     const _fn = (...params) => get(originBridge, methodName)(...params);
     const fn = (...params) => {
+      method.startTime = +new Date();
       method.refresh();
       // 拦截入参
       this.interceptParams(params, method);
       // 拦截返回值
       const result = _fn(...params);
       method.result.set('return', result);
+      method.syncTime = +new Date() - method.startTime;
       return result;
     };
     method._fn = _fn;
@@ -68,19 +70,22 @@ class Client {
 
   interceptParams(params: unknown[], method: Method): void {
     params.forEach((param, index) => {
-      if (isFunction(param) && _isFunction(param)) {
+      if (isFunction(param)) {
+        param = <Fn<unknown>>param;
         method.propsHasCallback = true;
         // 处理返回值在回调中情况
         const _fn = (...args) => {
           method.result.set(`cb${index}`, args);
-          return param.apply(this, args);
+          const result = (<Fn<unknown>>param).apply(this, args);
+          method.asyncTime = +new Date() - method.startTime;
+          return result;
         };
         params[index] = _fn;
         method.props.push({
           index,
           type: 'function',
           value: params[index],
-          fn: param,
+          fn: <Fn<unknown>>param,
           _fn,
         });
         return;
@@ -92,7 +97,9 @@ class Client {
         method.propsHasCallback = true;
         const fn = (...args) => {
           method.result.set(`cb${index}`, args);
-          return _fn.apply(this, args);
+          const result = _fn.apply(this, args);
+          method.asyncTime = +new Date() - method.startTime;
+          return result;
         };
         set(window, param, fn);
         method.props.push({

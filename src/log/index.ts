@@ -65,12 +65,8 @@ class Log {
       const $content = $inner;
       setTimeout(() => {
         if ($content.children.length > 0 || !obj) return;
-        if (
-          isMap(obj) &&
-          isMap(Object.getPrototypeOf(obj)) &&
-          _isMap<unknown, unknown>(obj)
-        ) {
-          this._renderMapKeys(obj, $content);
+        if (isMap(obj) && isMap(Object.getPrototypeOf(obj))) {
+          this._renderMapKeys(<Map<unknown, unknown>>obj, $content);
         } else {
           // render object's keys
           this._renderObjectKeys(obj, $content);
@@ -109,10 +105,10 @@ class Log {
     let keyType = '';
     // render
     let $sub;
-    if (isMap(val) && _isMap<unknown, unknown>(val)) {
-      $sub = this._generateMap(val, key, keyType);
-    } else if (isArray(val) && _isArray<unknown>(val)) {
-      $sub = this._generateArray(val, <number>key, keyType);
+    if (isMap(val)) {
+      $sub = this._generateMap(<Map<unknown, unknown>>val, key, keyType);
+    } else if (isArray(val)) {
+      $sub = this._generateArray(<unknown[]>val, <number>key, keyType);
     } else if (isObject(val)) {
       $sub = this._generateObject(val, <string>key, keyType);
     } else {
