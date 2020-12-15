@@ -11,6 +11,7 @@ export function String2Dom(tpl: string): Element {
   return child[0];
 }
 
+
 export function hasClass(el: HTMLElement, className: string): boolean {
   const reg = new RegExp('(^|\\s+)' + className + '($|\\s+)');
   return reg.test(el.className);

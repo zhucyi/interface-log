@@ -167,7 +167,7 @@ class Log {
     valueType: string,
     keyType: string
   ): HTMLElement {
-    let value = Object.prototype.toString.call(val);
+    let value = String(val);
     // handle value
     if (isString(val)) {
       valueType = 'string';

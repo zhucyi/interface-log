@@ -1,10 +1,17 @@
 import indexArt from './pannel.art';
+import methodArt from './method.art';
+import { Method } from '../client/methods';
 import './index.less';
-import { addDomString } from '../util/dom';
+import { addDomString, String2Dom } from '../util/dom';
+import { sizeOf } from '../util/tool';
+import { isNil } from 'lodash';
+import Log from '../log';
 
 class Surface {
   $root: HTMLElement;
   $content: HTMLElement;
+  flush = false;
+  paintQueue = [];
 
   constructor() {
     this._render();
@@ -35,14 +42,12 @@ class Surface {
   }
 
   _render(): void {
-    this._renderGeneral();
-  }
-  _renderGeneral(): void {
     this.$root = <HTMLElement>(
       addDomString(document.documentElement, indexArt())
     );
     this.$content = this.$root.querySelector('.log_content');
   }
+
   _initEvent(): void {
     const { $root } = this;
     const $btn: HTMLElement = $root.querySelector('.log_btn');
@@ -61,19 +66,54 @@ class Surface {
       $mask.style.display = 'none';
     });
     $clear.addEventListener('click', () => {
-      this.$content.innerHTML = '';
+      const items = this.$content.querySelectorAll('.log_item');
+      items.forEach(
+        item =>
+          !item.classList.contains('log_head') &&
+          this.$content.removeChild(item)
+      );
     });
   }
 
-  append(dom: HTMLElement): void {
-    this.$content.append(dom);
+  push(method: Method): void {
+    this.paintQueue.push(method);
+    this.append(method);
   }
-  refresh(fun: Fn<unknown>): void {
-    const $refresh: HTMLElement = this.$root.querySelector('.log_refresh');
-    $refresh.addEventListener('click', () => {
-      this.$content.innerHTML = '';
-      fun();
+
+  _genItem(method: Method): HTMLElement {
+    // method.result
+    const size = [];
+    method.result.forEach(value => {
+      let _size = 0;
+      if (isNil(value)) {
+        _size = 0;
+      } else if (typeof value == 'string') {
+        _size = sizeOf(value);
+      } else {
+        _size = sizeOf(JSON.stringify(value));
+      }
+      size.push(_size);
     });
+    const { syncTime, asyncTime } = method;
+    const time = { syncTime, asyncTime };
+    const $dom = String2Dom(
+      methodArt({
+        id: method.id,
+        name: method.name,
+        bridgeName: method.bridgeName,
+        status: method.status,
+      })
+    );
+    $dom.querySelector('.props').append(new Log(method.props).$line);
+    $dom.querySelector('.result').append(new Log(method.result).$line);
+    $dom.querySelector('.time').append(new Log(time).$line);
+    $dom.querySelector('.size').append(new Log(size).$line);
+    return <HTMLElement>$dom;
+  }
+
+  append(method: Method): void {
+    const $dom = this._genItem(method);
+    this.$content.append($dom);
   }
 }
 

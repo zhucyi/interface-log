@@ -11,6 +11,7 @@ import {
   isSet,
   isWeakSet,
   isFunction,
+  isObjectLike,
 } from 'lodash';
 
 export function isObject(value: unknown): boolean {
@@ -44,8 +45,11 @@ export function isWindow(value: unknown): boolean {
  * Simple JSON stringify, stringify top level key-value
  */
 export function JSONStringify(stringObject: unknown): string {
-  if (!isObject(stringObject) && !isArray(stringObject)) {
-    return JSON.stringify(stringObject);
+  // if (!isObject(stringObject) && !isArray(stringObject)) {
+  //   return JSON.stringify(stringObject);
+  // }
+  if (!isObjectLike(stringObject)) {
+    return String(stringObject);
   }
 
   let prefix = '{',
@@ -113,3 +117,40 @@ export function htmlEncode(text: string): string {
 }
 
 export const hasOwnProperty = Object.prototype.hasOwnProperty;
+
+// http://www.alloyteam.com/2013/12/js-calculate-the-number-of-bytes-occupied-by-a-string/
+export function sizeOf(str: string, charset?: string): number {
+  let total = 0,
+    charCode,
+    i,
+    len;
+  charset = charset ? charset.toLowerCase() : '';
+  if (charset === 'utf-16' || charset === 'utf16') {
+    for (i = 0, len = str.length; i < len; i++) {
+      charCode = str.charCodeAt(i);
+      if (charCode <= 0xffff) {
+        total += 2;
+      } else {
+        total += 4;
+      }
+    }
+  } else {
+    for (i = 0, len = str.length; i < len; i++) {
+      charCode = str.charCodeAt(i);
+      if (charCode <= 0x007f) {
+        total += 1;
+      } else if (charCode <= 0x07ff) {
+        total += 2;
+      } else if (charCode <= 0xffff) {
+        total += 3;
+      } else {
+        total += 4;
+      }
+    }
+  }
+  return total;
+}
+
+export function genId(): string {
+  return Math.random().toString(36).substring(2, 10);
+}

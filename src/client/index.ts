@@ -3,6 +3,7 @@ import { Bridge } from './bridge';
 import { Method } from './methods';
 import { getObjName } from '../util/tool';
 import { IProps } from '../types';
+import Surface from '../surface';
 
 class Client {
   props!: IProps;
@@ -49,18 +50,16 @@ class Client {
   handleSingleMethod(bridgeName: string, methodName: string): Fn<unknown> {
     const originBridge = get(window, bridgeName);
     const _bridge = this.bridgeMap.get(bridgeName);
-    const method = new Method(methodName);
+    const method = new Method(methodName, bridgeName);
     _bridge.methods.set(methodName, method);
     const _fn = (...params) => get(originBridge, methodName)(...params);
     const fn = (...params) => {
-      method.startTime = +new Date();
-      method.refresh();
+      method.refresh().processing();
       // 拦截入参
       this.interceptParams(params, method);
       // 拦截返回值
       const result = _fn(...params);
-      method.result.set('return', result);
-      method.syncTime = +new Date() - method.startTime;
+      method.calSyncTime().setResult('return', result).finishSync();
       return result;
     };
     method._fn = _fn;
@@ -71,38 +70,55 @@ class Client {
   interceptParams(params: unknown[], method: Method): void {
     params.forEach((param, index) => {
       if (isFunction(param)) {
-        param = <Fn<unknown>>param;
-        method.propsHasCallback = true;
         // 处理返回值在回调中情况
-        const _fn = (...args) => {
-          method.result.set(`cb${index}`, args);
-          const result = (<Fn<unknown>>param).apply(this, args);
-          method.asyncTime = +new Date() - method.startTime;
-          return result;
-        };
+        method.propsHasCallback = true;
+        // _fn未包装函数 fn包装后被实际执行函数
+        let _fn, fn;
+        if (method.isRelated(<Fn<unknown>>param)) {
+          _fn = method.getOriginFn(<Fn<unknown>>param);
+          fn = param;
+        } else {
+          _fn = param;
+          fn = (...args) => {
+            const result = _fn.apply(this, args);
+            method.calAsyncTime().setResult(`cb${index}`, args).finishAsync();
+            return result;
+          };
+          method.addRelateFn(_fn).addRelateFn(fn);
+        }
+
         params[index] = _fn;
-        method.props.push({
+        method.addProps({
           index,
           type: 'function',
-          value: params[index],
-          fn: <Fn<unknown>>param,
+          value: param,
+          fn,
           _fn,
         });
         return;
       }
 
-      const _fn = get(window, param);
-      if (isString(param) && isFunction(_fn)) {
+      const paramFn = get(window, param);
+      if (isString(param) && isFunction(paramFn)) {
         // 返回值在回调中,但传入的是函数名称字符串
         method.propsHasCallback = true;
-        const fn = (...args) => {
-          method.result.set(`cb${index}`, args);
-          const result = _fn.apply(this, args);
-          method.asyncTime = +new Date() - method.startTime;
-          return result;
-        };
+        // _fn未包装函数 fn包装后被实际执行函数
+        let _fn, fn;
+        if (method.isRelated(paramFn)) {
+          _fn = method.getOriginFn(paramFn);
+          fn = paramFn;
+        } else {
+          _fn = paramFn;
+          fn = (...args) => {
+            const result = paramFn.apply(this, args);
+            method.calAsyncTime().setResult(`cb${index}`, args).finishAsync();
+            return result;
+          };
+          method.addRelateFn(_fn).addRelateFn(fn);
+        }
+
         set(window, param, fn);
-        method.props.push({
+        method.addProps({
           index,
           type: 'string',
           value: param,
@@ -110,13 +126,18 @@ class Client {
           _fn,
         });
       } else {
-        method.props.push({
+        method.addProps({
           index,
           type: getObjName(param),
           value: param,
         });
       }
     });
+  }
+
+  register(_surface: Surface): void {
+    set(Client, 'surface', _surface);
+    // Client.surface = _surface;
   }
 }
 

@@ -12,28 +12,62 @@
     box-shadow: 0 0 0.61538462em rgba(0, 0, 0, 0.4);
     border: none;
     font-size: 1.5em;
-    display: block;
   }
   .log_panel {
-    display: flex;
+    // display: flex;
     flex-flow: column nowrap;
     position: fixed;
     width: 100%;
     height: 70%;
     bottom: 0;
     border: 1px solid #eee;
-    border-top-left-radius: 1%;
-    border-top-right-radius: 1%;
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
     display: none;
     background: #fff;
     z-index: 2000;
     .log_content {
       flex: 1;
       overflow-y: auto;
-      padding: 0.3em;
+      padding: 0.3em 0.5em 0 0.5em;
+      .log_head {
+        border-bottom: 1px solid #eee;
+      }
       .log_item {
         display: flex;
-        > div {
+        line-height: 2;
+        border-bottom: 1px solid #eee;
+
+        .name {
+          flex: 0 1 12%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .status {
+          flex: 0 1 12%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .props {
+          flex: 1;
+          > .vc-fold {
+            line-height: 2;
+          }
+        }
+        .result {
+          flex: 1;
+          > .vc-fold {
+            line-height: 2;
+          }
+        }
+        .time {
+          display: none;
+          flex: 1;
+        }
+        .size {
+          display: none;
           flex: 1;
         }
       }
