@@ -2,9 +2,10 @@ import { MethodsProps } from '../types';
 import Client from '../client';
 import { get } from 'lodash';
 import Surface from '../surface';
-import { genId } from '../util/tool';
+// import { genId } from '../util/tool';
+let count = 0;
 export class Method {
-  id: string;
+  id: number;
   name: string;
   bridgeName: string;
   _fn: Fn<unknown>;
@@ -19,7 +20,7 @@ export class Method {
   result: Map<string, unknown> = new Map();
 
   constructor(name: string, bridgeName: string) {
-    this.id = genId();
+    this.id = count++;
     this.name = name;
     this.bridgeName = bridgeName;
   }

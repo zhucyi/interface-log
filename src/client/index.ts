@@ -52,7 +52,7 @@ class Client {
     const _bridge = this.bridgeMap.get(bridgeName);
     const method = new Method(methodName, bridgeName);
     _bridge.methods.set(methodName, method);
-    const _fn = (...params) => get(originBridge, methodName)(...params);
+    const _fn = (...args) => originBridge[methodName](...args);
     const fn = (...params) => {
       method.refresh().processing();
       // 拦截入参
