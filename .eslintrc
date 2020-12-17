@@ -10,6 +10,12 @@
   "plugins": ["@typescript-eslint"],
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "rules": {
-    "no-console": "error"
+    "no-console": "error",
+    "@typescript-eslint/no-this-alias": [
+      "error",
+      {
+        "allowedNames": ["self"] // Allow `const self = this`; `[]` by default
+      }
+    ]
   }
 }

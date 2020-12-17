@@ -1,8 +1,9 @@
-import { MethodsProps } from '../types';
+import { MethodsProps, MethodsResult } from '../types';
 import Client from '../client';
 import { get } from 'lodash';
 import Surface from '../surface';
-// import { genId } from '../util/tool';
+import { parse } from '../util/tool';
+
 let count = 0;
 export class Method {
   id: number;
@@ -10,14 +11,14 @@ export class Method {
   bridgeName: string;
   _fn: Fn<unknown>;
   fn: Fn<unknown>;
-  status = 'ready'; //ready processing finish
+  status = 'ready'; //ready,processing,sync/async-finish
   startTime!: number;
   syncTime!: number;
   asyncTime!: number;
   propsHasCallback = false;
   relateFns = []; // 处理回调函数参数重复调用
   props: MethodsProps[] = [];
-  result: Map<string, unknown> = new Map();
+  result: Map<string, MethodsResult> = new Map();
 
   constructor(name: string, bridgeName: string) {
     this.id = count++;
@@ -56,12 +57,12 @@ export class Method {
     return this;
   }
   finishSync(): Method {
-    this.status = 'sync finish';
+    this.status = 'sync-finish';
     this.collect(this);
     return this;
   }
   finishAsync(): Method {
-    this.status = 'async finish';
+    this.status = 'async-finish';
     this.collect(this);
     return this;
   }
@@ -80,8 +81,20 @@ export class Method {
     return this;
   }
 
-  setResult(name: string, result: unknown): Method {
-    this.result.set(name, result);
+  setResult(name: string, result: unknown | unknown[]): Method {
+    this.result.set(name, {
+      origin: result,
+      prettier: parse(result),
+    });
+    // 针对callback的回调参数进行显示优化
+    if (/callback/.test(name)) {
+      ``;
+      const _result = (<unknown[]>result).map(item => parse(item));
+      this.result.set(name, {
+        origin: result,
+        prettier: parse(_result),
+      });
+    }
     return this;
   }
   addProps(prop: MethodsProps): Method {

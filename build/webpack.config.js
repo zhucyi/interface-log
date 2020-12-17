@@ -26,6 +26,7 @@ module.exports = merge(base, {
     }),
     new lodashWebpackPlugin({
       paths: true,
+      cloning: true,
     }),
   ],
   // optimization: {

@@ -81,7 +81,7 @@ class Client {
           _fn = param;
           fn = (...args) => {
             const result = _fn.apply(this, args);
-            method.calAsyncTime().setResult(`cb${index}`, args).finishAsync();
+            method.calAsyncTime().setResult(`callback-${index}`, args).finishAsync();
             return result;
           };
           method.addRelateFn(_fn).addRelateFn(fn);
@@ -111,7 +111,7 @@ class Client {
           _fn = paramFn;
           fn = (...args) => {
             const result = paramFn.apply(this, args);
-            method.calAsyncTime().setResult(`cb${index}`, args).finishAsync();
+            method.calAsyncTime().setResult(`callback-${index}`, args).finishAsync();
             return result;
           };
           method.addRelateFn(_fn).addRelateFn(fn);

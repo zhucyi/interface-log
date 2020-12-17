@@ -16,6 +16,11 @@ export interface MethodsProps {
   _fn?: Fn<unknown>;
 }
 
+export interface MethodsResult {
+  origin: unknown;
+  prettier: unknown;
+}
+
 export interface Factor {
   method: Method;
   render: Fn<unknown>;

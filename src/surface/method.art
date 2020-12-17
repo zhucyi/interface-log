@@ -1,6 +1,5 @@
 <div id="{{id}}" class="log_item">
-  <div class="name">{{ bridgeName }}.{{ name }}</div>
-  <div class="status">{{ status }}</div>
+  <div class="name {{status}}">{{ bridgeName }}.{{ name }}</div>
   <div class="props"></div>
   <div class="result"></div>
   <div class="time"></div>

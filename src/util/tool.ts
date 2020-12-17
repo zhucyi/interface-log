@@ -154,3 +154,22 @@ export function sizeOf(str: string, charset?: string): number {
 export function genId(): string {
   return Math.random().toString(36).substring(2, 10);
 }
+
+/**
+ * 预处理客户端返回串
+ */
+export function parse(params: unknown): unknown {
+  if (isObjectLike(params)) {
+    return params;
+  }
+  if (typeof params !== 'string') {
+    return params;
+  }
+  let obj;
+  try {
+    obj = JSON.parse(params);
+  } catch (e) {
+    obj = params;
+  }
+  return obj;
+}

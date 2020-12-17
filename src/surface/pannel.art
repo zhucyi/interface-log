@@ -1,15 +1,22 @@
-<div class="log">
+<div id="interface-log" class="log">
   <button class="log_btn">check</button>
   <div class="log_panel">
+    <div class="log_legend">
+      <span class="">execution status</span>
+      <div class="ready">ready</div>
+      <div class="processing">processing</div>
+      <div class="sync-finish">sync-finish</div>
+      <div class="async-finish">async-finish</div>
+    </div>
     <div class="log_content">
       <div class="log_head log_item">
         <div class="name">name</div>
-        <div class="status">status</div>
         <div class="props">props</div>
         <div class="result">result</div>
         <div class="time">time</div>
         <div class="size">size</div>
       </div>
+      <div class="log_content_inner"></div>
     </div>
     <div class="log_tool">
       <div class="log_hide log_op">hide</div>
@@ -17,4 +24,8 @@
     </div>
   </div>
   <div class="log_mask"></div>
+  <div class="log_zoom">
+    <div class="exit">×</div>
+    <div class="container"></div>
+  </div>
 </div>

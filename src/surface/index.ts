@@ -2,16 +2,17 @@ import indexArt from './pannel.art';
 import methodArt from './method.art';
 import { Method } from '../client/methods';
 import './index.less';
-import { addDomString, String2Dom } from '../util/dom';
-import { sizeOf } from '../util/tool';
-import { isNil } from 'lodash';
+import { addDomString, String2Dom, longPress } from '../util/dom';
+// import { sizeOf } from '../util/tool';
+import { cloneDeep } from 'lodash';
 import Log from '../log';
+import { schedulerWatcher } from '../scheduler';
 
 class Surface {
   $root: HTMLElement;
   $content: HTMLElement;
-  flush = false;
-  paintQueue = [];
+  $zoom: HTMLElement;
+  $zoomContainer: HTMLElement;
 
   constructor() {
     this._render();
@@ -45,7 +46,9 @@ class Surface {
     this.$root = <HTMLElement>(
       addDomString(document.documentElement, indexArt())
     );
-    this.$content = this.$root.querySelector('.log_content');
+    this.$content = this.$root.querySelector('.log_content_inner');
+    this.$zoom = this.$root.querySelector('.log_zoom');
+    this.$zoomContainer = this.$zoom.querySelector('.container');
   }
 
   _initEvent(): void {
@@ -55,6 +58,10 @@ class Surface {
     const $hide: HTMLElement = $root.querySelector('.log_hide');
     const $mask: HTMLElement = $root.querySelector('.log_mask');
     const $clear: HTMLElement = $root.querySelector('.log_clear');
+    this.$zoom.querySelector('.exit').addEventListener('click', () => {
+      this.$zoom.classList.remove('trigger');
+      this.$zoom.querySelector('.container').innerHTML = '';
+    });
     $btn.addEventListener('click', () => {
       $panel.style.display = 'flex';
       $btn.style.display = 'none';
@@ -76,27 +83,17 @@ class Surface {
   }
 
   push(method: Method): void {
-    this.paintQueue.push(method);
-    this.append(method);
+    method = cloneDeep(method);
+    schedulerWatcher({
+      method,
+      render: () => {
+        this.append(method);
+      },
+    });
   }
 
   _genItem(method: Method): HTMLElement {
-    // method.result
-    const size = [];
-    method.result.forEach(value => {
-      let _size = 0;
-      if (isNil(value)) {
-        _size = 0;
-      } else if (typeof value == 'string') {
-        _size = sizeOf(value);
-      } else {
-        _size = sizeOf(JSON.stringify(value));
-      }
-      size.push(_size);
-    });
-    const { syncTime, asyncTime } = method;
-    const time = { syncTime, asyncTime };
-    const $dom = String2Dom(
+    const $dom = <HTMLElement>String2Dom(
       methodArt({
         id: method.id,
         name: method.name,
@@ -104,11 +101,34 @@ class Surface {
         status: method.status,
       })
     );
-    $dom.querySelector('.props').append(new Log(method.props).$line);
-    $dom.querySelector('.result').append(new Log(method.result).$line);
-    $dom.querySelector('.time').append(new Log(time).$line);
-    $dom.querySelector('.size').append(new Log(size).$line);
-    return <HTMLElement>$dom;
+
+    const classes = ['props', 'result'];
+    classes.forEach(className => {
+      const $line = new Log(method[className]).$line;
+      $dom.querySelector(`.${className}`).append($line);
+    });
+
+    const self = this;
+    Array.from($dom.children).forEach($child => {
+      longPress(
+        <HTMLElement>$child,
+        function () {
+          const { $zoom, $zoomContainer } = self;
+          $zoom.classList.add('trigger');
+          const index = classes.findIndex(_class =>
+            (<HTMLElement>this).classList.contains(_class)
+          );
+          if (index === -1) {
+            $zoomContainer.append((<HTMLElement>this).cloneNode(true));
+          } else {
+            $zoomContainer.append(new Log(method[classes[index]]).$line);
+          }
+        },
+        500,
+        false
+      );
+    });
+    return $dom;
   }
 
   append(method: Method): void {
