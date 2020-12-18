@@ -16,34 +16,32 @@ function resetFlush(): void {
 
 function flushQueue(): void {
   flushing = true;
-  queue.sort((i1, i2) => i1.method.id - i2.method.id);
+  queue.sort((f1, f2) => f1.id - f2.id);
   while (index < queue.length) {
     queue[index].render();
-    collection.delete(queue[index].method.id);
+    collection.delete(queue[index].id);
     index++;
   }
   resetFlush();
 }
 
 function patch(factor: Factor) {
-  const order = queue.findIndex(
-    _factor => _factor.method.id === factor.method.id
-  );
+  const order = queue.findIndex(_factor => _factor.id === factor.id);
   queue.splice(order, 1, factor);
 }
 
 export function schedulerWatcher(factor: Factor): void {
-  const { method = { id: 0 } } = factor;
-  if (collection.has(method.id)) {
+  const { id = 0 } = factor;
+  if (collection.has(id)) {
     patch(factor);
     return;
   }
-  collection.add(method.id);
+  collection.add(id);
   if (!flushing) {
     queue.push(factor);
   } else {
     let pos = queue.length - 1;
-    while (pos > index && queue[pos].method.id > queue[index].method.id) {
+    while (pos > index && queue[pos].id > queue[index].id) {
       pos--;
     }
   }

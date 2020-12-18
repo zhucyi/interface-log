@@ -1,5 +1,3 @@
-import { Method } from '@/client/methods';
-
 export interface PlainObject {
   [key: string]: unknown;
 }
@@ -22,6 +20,6 @@ export interface MethodsResult {
 }
 
 export interface Factor {
-  method: Method;
+  id: number;
   render: Fn<unknown>;
 }

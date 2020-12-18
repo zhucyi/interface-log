@@ -5,7 +5,7 @@ import './index.less';
 import { addDomString, String2Dom, longPress } from '../util/dom';
 // import { sizeOf } from '../util/tool';
 import { cloneDeep } from 'lodash';
-import Log from '../log';
+import { getFoldedLine } from '../log/index';
 import { schedulerWatcher } from '../scheduler';
 
 class Surface {
@@ -85,7 +85,7 @@ class Surface {
   push(method: Method): void {
     method = cloneDeep(method);
     schedulerWatcher({
-      method,
+      id: method.id,
       render: () => {
         this.append(method);
       },
@@ -104,7 +104,8 @@ class Surface {
 
     const classes = ['props', 'result'];
     classes.forEach(className => {
-      const $line = new Log(method[className]).$line;
+      // const $line = new Log(method[className]).$line;
+      const $line = getFoldedLine(method[className]);
       $dom.querySelector(`.${className}`).append($line);
     });
 
@@ -121,7 +122,8 @@ class Surface {
           if (index === -1) {
             $zoomContainer.append((<HTMLElement>this).cloneNode(true));
           } else {
-            $zoomContainer.append(new Log(method[classes[index]]).$line);
+            $zoomContainer.append(getFoldedLine(method[classes[index]]));
+            // $zoomContainer.append(new Log(method[classes[index]]).$line);
           }
         },
         500,
