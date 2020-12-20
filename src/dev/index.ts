@@ -10,11 +10,9 @@ set(window, 'obj', {
   fn: function (key) {
     const fn = get(window, key);
     setTimeout(() => {
-      fn(
-        `{"data":{"historyBookMarkSwitch":1,"browserSugNum":8,"historyBookMarkNum":6},"hash":"9bd2aca4f28a54b9c96a856b5076d185"}`
-      );
+      fn(`{"data":{"test":1,"test1":8,"test2":6},"test3":"123"}`);
     }, 1000);
-    return `{"data":{"historyBookMarkSwitch":1,"browserSugNum":8,"historyBookMarkNum":6},"hash":"9bd2aca4f28a54b9c96a856b5076d185"}`;
+    return `{"data":{"test":1,"test1":8,"test2":6},"data1":{"test":1,"test1":8,"test2":6},"data13":{"test":1,"test1":8,"test2":6},"data12":{"test":1,"test1":8,"test2":6},"data11":{"test":1,"test1":8,"test2":6},"test3":"123"}`;
   },
 });
 set(window, 'function155993296.global1', function (param) {
