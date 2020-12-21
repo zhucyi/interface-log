@@ -27,13 +27,16 @@ new InterfaceLog({bridge:['bridgeName']});
 Referring [unpkg](https://unpkg.com)
 
 ### 提示
-通过对函数执行状态打快照来区分执行阶段，包括`ready`，`processing`，`sync-finish`，`async-finish`四种状态，通过颜色区分调用状态。
+1. 点击`name`边上的`replay`图标，再次执行该请求。
+2. 通过对函数执行状态打快照来区分执行阶段，包括`ready`，`processing`，`sync-finish`，`async-finish`四种状态，通过颜色区分调用状态。
 + ready 函数已初始化，准备调用。
 + processing 函数正在执行中。
 + sync-finish 同步函数执行结束。
 + async-finish 异步函数（通过回调方式获取返回值）函数执行结束。
 
-对列表内容项长按，展示内容详情。
+3. 对列表内容项长按，展示内容详情。
+
+4. 将单条记录向右滑动可以进行删除。
 
 参考 [vconsole](https://github.com/Tencent/vConsole) 实现
 

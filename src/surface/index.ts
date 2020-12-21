@@ -2,11 +2,11 @@ import indexArt from './pannel.art';
 import methodArt from './method.art';
 import { Method } from '../client/methods';
 import './index.less';
-import { addDomString, String2Dom, longPress } from '../util/dom';
-// import { sizeOf } from '../util/tool';
+import { addDomString, String2Dom, longPress, slideAway } from '../util/dom';
 import { cloneDeep } from 'lodash';
 import { getFoldedLine } from '../log/index';
 import { schedulerWatcher } from '../scheduler';
+import reloadSVG from '../assets/replay.svg';
 
 class Surface {
   $root: HTMLElement;
@@ -60,7 +60,7 @@ class Surface {
     const $clear: HTMLElement = $root.querySelector('.log_clear');
     this.$zoom.querySelector('.exit').addEventListener('click', () => {
       this.$zoom.classList.remove('trigger');
-      this.$zoom.querySelector('.container').innerHTML = '';
+      this.$zoomContainer.innerHTML = '';
     });
     $btn.addEventListener('click', () => {
       $panel.style.display = 'flex';
@@ -99,12 +99,26 @@ class Surface {
         name: method.name,
         bridgeName: method.bridgeName,
         status: method.status,
+        reloadSVG,
       })
+    );
+    // replay function
+    $dom.querySelector('.replay').addEventListener('click', () => {
+      method.fn(...method.props.map(({ value }) => value));
+    });
+    // 滑动删除项
+    slideAway(
+      $dom,
+      () => {
+        setTimeout(() => {
+          $dom.parentElement.removeChild($dom);
+        }, 200);
+      },
+      false
     );
 
     const classes = ['props', 'result'];
     classes.forEach(className => {
-      // const $line = new Log(method[className]).$line;
       const $line = getFoldedLine(method[className]);
       $dom.querySelector(`.${className}`).append($line);
     });
@@ -120,10 +134,11 @@ class Surface {
             (<HTMLElement>this).classList.contains(_class)
           );
           if (index === -1) {
-            $zoomContainer.append((<HTMLElement>this).cloneNode(true));
+            $zoomContainer.append(
+              (<HTMLElement>this.querySelector('span')).cloneNode(true)
+            );
           } else {
             $zoomContainer.append(getFoldedLine(method[classes[index]]));
-            // $zoomContainer.append(new Log(method[classes[index]]).$line);
           }
         },
         500,

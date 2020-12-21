@@ -28,13 +28,16 @@ new InterfaceLog({bridge:['bridgeName']});
 Referring [unpkg](https://unpkg.com)
 
 ### tips
-The execution stage is distinguished by taking a snapshot of the function execution state, including four states of `ready`, `processing`, `sync-finish`, and `async-finish`, and the call state is distinguished by color.
-+ The ready function has been initialized and is ready to be called.
-+ The processing function is being executed.
-+ sync-finish synchronization function execution ends.
-+ async-finish asynchronous function (getting the return value through callback) function execution ends.
+1. Click the `replay` icon next to `name` to execute the request again.
+2. The execution stage is distinguished by taking a snapshot of the function execution state, including four states of `ready`, `processing`, `sync-finish`, and `async-finish`, and the call state is distinguished by color.
+   + The ready function has been initialized and is ready to be called.
+   + The processing function is being executed.
+   + sync-finish synchronization function execution ends.
+   + async-finish asynchronous function (getting the return value through callback) function execution ends.
 
-Long press on the list content item to display the content details.
+3. Long press on the list content item to display the content details.
+
+4. Slide a single record to the right to delete it.
 
 Referring [vconsole](https://github.com/Tencent/vConsole) implementation
 

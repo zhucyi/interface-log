@@ -80,8 +80,11 @@ class Client {
         } else {
           _fn = param;
           fn = (...args) => {
-            const result = _fn.apply(this, args);
-            method.calAsyncTime().setResult(`callback-${index}`, args).finishAsync();
+            const result = _fn(...args);
+            method
+              .calAsyncTime()
+              .setResult(`callback-${index}`, args)
+              .finishAsync();
             return result;
           };
           method.addRelateFn(_fn).addRelateFn(fn);
@@ -110,8 +113,11 @@ class Client {
         } else {
           _fn = paramFn;
           fn = (...args) => {
-            const result = paramFn.apply(this, args);
-            method.calAsyncTime().setResult(`callback-${index}`, args).finishAsync();
+            const result = paramFn(...args);
+            method
+              .calAsyncTime()
+              .setResult(`callback-${index}`, args)
+              .finishAsync();
             return result;
           };
           method.addRelateFn(_fn).addRelateFn(fn);

@@ -25,6 +25,10 @@ module.exports = {
         test: /\.art$/,
         use: 'art-template-loader',
       },
+      {
+        test: /\.svg$/,
+        use: 'svg-inline-loader',
+      },
     ],
   },
   resolve: {
