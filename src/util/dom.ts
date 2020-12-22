@@ -25,6 +25,7 @@ export function addClass(el: HTMLElement, className: string): void {
 }
 
 const canTouch = 'ontouchstart' in window;
+const TOUCHCANCEL = 'touchcancel';
 let event = {
   start: 'mousedown',
   move: 'mousemove',
@@ -49,15 +50,23 @@ export function longPress(
     clearTimeout(timer);
     preventDefault && e.preventDefault();
   };
+  const end = e => {
+    preventDefault && e.preventDefault();
+    clearTimeout(timer);
+    $target.removeEventListener(event.move, move);
+    $target.removeEventListener(event.end, end);
+    if (canTouch) {
+      $target.removeEventListener(TOUCHCANCEL, end);
+    }
+  };
   $target.addEventListener(event.start, function (e) {
     preventDefault && e.preventDefault();
     timer = setTimeout(() => fn.apply(this, [e]), timeout);
     $target.addEventListener(event.move, move);
-  });
-  $target.addEventListener(event.end, e => {
-    preventDefault && e.preventDefault();
-    $target.removeEventListener(event.move, move);
-    clearTimeout(timer);
+    $target.addEventListener(event.end, end);
+    if (canTouch) {
+      $target.addEventListener(TOUCHCANCEL, end);
+    }
   });
 }
 
@@ -75,23 +84,13 @@ export function slideAway(
         ? (<TouchEvent>e).touches[0].clientX
         : (<MouseEvent>e).clientX;
     slideWidth = posX - startX;
+    if (slideWidth < 0) return;
     $target.style.transform = `translateX(${slideWidth}px)`;
     $target.style.opacity = 1 - (slideWidth * 1.5) / deviceWidth + '';
   };
-
-  $target.addEventListener(event.start, function (e) {
+  const end = e => {
     preventDefault && e.preventDefault();
-    $target.addEventListener(event.move, move);
-    $target.style.transition = '';
-    startX =
-      event.start === 'touchstart'
-        ? (<TouchEvent>e).touches[0].clientX
-        : (<MouseEvent>e).clientX;
-  });
-  $target.addEventListener(event.end, e => {
-    preventDefault && e.preventDefault();
-    $target.removeEventListener(event.move, move);
-    if (slideWidth > deviceWidth / 2.5) {
+    if (slideWidth > deviceWidth / 3.5) {
       $target.style.transform = `translateX(${deviceWidth}px)`;
       $target.style.opacity = '0';
       $target.style.transition = 'all .2s';
@@ -100,6 +99,24 @@ export function slideAway(
       $target.style.transform = '';
       $target.style.opacity = '1';
       $target.style.transition = 'all .2s';
+    }
+    $target.removeEventListener(event.move, move);
+    if (canTouch) {
+      $target.removeEventListener(TOUCHCANCEL, end);
+    }
+  };
+
+  $target.addEventListener(event.start, function (e) {
+    preventDefault && e.preventDefault();
+    $target.style.transition = '';
+    startX =
+      event.start === 'touchstart'
+        ? (<TouchEvent>e).touches[0].clientX
+        : (<MouseEvent>e).clientX;
+    $target.addEventListener(event.move, move);
+    $target.addEventListener(event.end, end);
+    if (canTouch) {
+      $target.addEventListener(TOUCHCANCEL, end);
     }
   });
 }
