@@ -19,11 +19,15 @@ module.exports = {
       },
       {
         test: /.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader'],
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
       },
       {
         test: /\.art$/,
-        use: 'art-template-loader',
+        // use: 'art-template-loader',
+        loader: 'art-template-loader',
+        options: {
+          minimize: true,
+        },
       },
       {
         test: /\.svg$/,
