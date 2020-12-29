@@ -203,10 +203,7 @@ function _generateNormal(
 }
 
 function _renderPrototype(obj: unknown, $content: HTMLElement): void {
-  // if (!isObject(obj)) return;
   const proto = Object.getPrototypeOf(obj);
-  // let $proto;
-  // if (isObject(proto)) {
   const $proto = getFoldedLine(
     proto,
     flodCodeArt({
@@ -216,16 +213,5 @@ function _renderPrototype(obj: unknown, $content: HTMLElement): void {
       valueType: 'object',
     })
   );
-  // } else {
-  //   // if proto is not an object, it should be `null`
-  //   $proto = String2Dom(
-  //     nunjucks.renderString(flodCodeTpl, {
-  //       key: '__proto__',
-  //       keyType: 'private',
-  //       value: 'null',
-  //       valueType: 'null',
-  //     })
-  //   );
-  // }
   $content.insertAdjacentElement('beforeend', $proto);
 }
