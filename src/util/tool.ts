@@ -173,3 +173,7 @@ export function parse(params: unknown): unknown {
   }
   return obj;
 }
+
+export function isNative(Ctor: unknown): boolean {
+  return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
+}

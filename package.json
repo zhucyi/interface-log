@@ -1,6 +1,6 @@
 {
   "name": "interface-log",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "A lightweight front-end debugging tool used to debug the mobile client interface (jsbridge).",
   "repository": "https://github.com/zhucyi/interface-log.git",
   "author": "Choee",

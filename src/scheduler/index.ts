@@ -1,5 +1,6 @@
 // import { Method } from '../client/methods';
 import { Factor } from '../types';
+import { nextTick } from '../util/next-tick';
 
 const queue: Factor[] = [];
 const collection = new Set();
@@ -47,6 +48,7 @@ export function schedulerWatcher(factor: Factor): void {
   }
   if (!waiting) {
     waiting = true;
-    setTimeout(flushQueue);
+    // setTimeout(flushQueue);
+    nextTick(flushQueue);
   }
 }
